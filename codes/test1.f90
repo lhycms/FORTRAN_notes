@@ -1,11 +1,9 @@
-PROGRAM example
-  IMPLICIT NONE
-  REAL :: x
-  REAL*8 :: y
+PROGRAM demo
 
-  x = 0.1
-  y = 0.1
+REAL*8 :: x, y, result
+x = 123456.789
+y = 987654.321
+result = x + y
+print *, "The sum of x and y is : ", result
 
-  PRINT *, 'x =', x
-  PRINT *, 'y =', y
-END PROGRAM example
+END PROGRAM demo

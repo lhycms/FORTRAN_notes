@@ -1,10 +1,10 @@
-# 1. `program <name>` && `end program <name>`
+# 1. `PROGRAM <name>` && `end PROGRAM <name>`
 ```fortran
-program convert_wg2rho
+PROGRAM convert_wg2rho
 
 ...
 
-end convert_wg2rho
+END PROGRAM convert_wg2rho
 ```
 
 # 2. `implicit` (隐式语句)
@@ -242,4 +242,68 @@ $ ifort test1.f90 -o test
 $ ./test
  x =  0.1000000    
  y =  0.100000001490116
+```
+
+
+# 7. `PRINT *, varibale1, variable2, ...`
+<font color="steelblue" size="4">
+
+1. In Fortran, you can use `print` statement to outpuyt text to the `console` or `file`. The basic syntax of the `PRINT` is as follows:
+    - `format` is format specification that controls the appearance of the output.
+    - `variable1`, `varibable2` are variables to be printed.
+```fortran
+PRINT format, varibable1, varibale2
+``` 
+
+</font>
+
+## 7.1. Demo 1: print a string to console -- format specifier (`(A)`)
+```fortran
+PROGRAM hello 
+
+IMPLICIT NONE
+PRINT '(A)', "Hello, world!"
+
+END PROGRAM hello
+```
+
+
+## 7.2. Demo 2: print a `integer with field width of 10 characters` -- format specifier (`(I10)`)
+```fortran
+PROGRAM print_int
+
+IMPLICIT NONE
+INTEGER :: I = 42
+PRINT '(I10)', i
+
+END PROGRAM print_int
+```
+
+## 7.3. Demo 3: print a `real variable with 6 decimal place` -- format specifier (`(F0.6)`)
+```fortran
+PROGRAM print_real
+
+IMPLICIT NONE
+REAL :: x = 3.1415926
+PRINT '(F0.6)', x
+
+END PROGRAM print_real
+```
+
+## 7.4. Format specifier -- (`*`)
+<font color="steelblue" size="4">
+
+1. `PRINT *` statement is a shorthand for printing output to the console `without` using a format specifier.
+2. For example, to print `a string and an integer` variable to the console using `PRINT *`, you can write:
+
+</font>
+
+```fortran
+PROGRAM print_variables
+
+IMPLICIT NONE
+INTEGER :: i = 42
+PRINT *, "The value is ", i
+
+END PROGRAM print_variables
 ```
