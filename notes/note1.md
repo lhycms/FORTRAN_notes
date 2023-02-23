@@ -309,3 +309,9 @@ END PROGRAM print_variables
 ```
 
 
+# 8. `WRITE`
+<font color="steelblue" size="4">
+
+1. 
+
+</font>
