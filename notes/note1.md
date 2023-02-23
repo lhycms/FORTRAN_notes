@@ -309,7 +309,22 @@ END PROGRAM print_variables
 ```
 
 
-# 8. `WRITE`
+# 8. `WRITE(file_unit, format, IOSTAT)`
+<font color="red" size="5">
+
+`IOSTAT`
+--------
+1. `IOSTAT` is an optional argument that can be used with Fortran `input/output statement` such as:
+    - `read(file_unit, format, IOSTAT)`
+    - `write(file_unit, format, IOSTAT)`
+    - It is `intent(out)`. It is used to indicate the status of the `input/output` operation, i.e. whether the operation was successful or not.
+2. The `IOSTAT` argument is an integer variable that is assigned a value by `input/output` statement:
+    1. `IOSTAT=0`: The operation was `successful`
+    2. `IOSTAT>0`: An error occured during the operation. The value of `IOSTAT` indicates the number of the first record that could not be processed.
+    3. `IOSTAT<0`: End-of-file was encountered before any data could be processed.
+
+</font>
+
 <font color="steelblue" size="4">
 
 1. The `write()` statement in Fortran is used to output data to a file or to the console. The basic syntax of the `write()` statement is as follows:
@@ -350,7 +365,7 @@ $ ./test
 ```
 
 
-## 8.2. Demo 2: Output to `file`
+## 8.2. Demo 2: Output to `file` -- `open(unit, file, status)` && `close(unit)`
 ```fortran
 program main
   implicit none
@@ -379,7 +394,61 @@ $ ./test    # output to `output.txt`
 ```
 
 
-# 9. `REWIND`
+# 9. `READ(file_unit, format, IOSTAT)`
+<font color="steelblue" size="4">
+
+
+
+</font>
+
+## 9.1. Demo 1: How to use `READ(file_unit, format, iostat)`
+```fortran
+!!! Part I. Module -- array_utils
+module array_utils
+  implicit none
+  contains
+    !!! Subroutine 1. set_array_value
+    subroutine set_array_value(array_real, file_unit)
+      real*8, dimension(:) :: array_real
+      integer :: file_unit, idx, ierr
+      do idx = 1, size(array_real)
+        read(file_unit, *, IOSTAT=ierr) array_real(idx)
+      end do
+    end subroutine set_array_value
+
+    !!! Subroutine 2. print_array()
+    subroutine print_array(array_real)
+    real*8, dimension(:) :: array_real
+      write(*, *) array_real
+    end subroutine print_array
+
+end module array_utils
+
+
+!!! Part II. Driver code
+program main
+  use array_utils
+  implicit none
+  real*8, dimension(10) :: array_real;
+  integer file_unit;
+
+  ! Open the `output.txt` file
+  open(unit=file_unit, file="./output.txt", status="old")
+  call set_array_value(array_real, file_unit)
+  call print_array(array_real)
+  ! Close the `output.txt` file
+  close(file_unit)
+end program main
+```
+Output:
+```shell
+$ gfortran test1.f90 -o test
+$ ./test
+   1.0000000000000000        2.0000000000000000        3.0000000000000000        4.0000000000000000        5.0000000000000000        6.0000000000000000        7.0000000000000000        8.0000000000000000        9.0000000000000000        10.000000000000000   
+```
+
+
+# 10. `REWIND`
 <font color="steelblue" size="4">
 
 1. The `rewind(file_unit)` statement is used to `reset the file position` to the beginning of a file.
@@ -389,7 +458,7 @@ rewind(file_unit)
 
 </font>
 
-## 9.1. Demo 1:
+## 10.1. Demo 1:
 ```txt
 1
 2
