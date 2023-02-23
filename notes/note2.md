@@ -88,7 +88,7 @@ $ ./test
 ```
 
 
-# 2. When dummy argument is `array`
+# 2. When dummy argument is `array` -- 在 Fortran 中，array 作为dummy argument传递时，传递的是`reference`
 <font color="steelblue" size="4">
 
 1. You can pass an array as argument to the subroutine or function.
@@ -171,17 +171,6 @@ call print_array(array_int)
 Error: Procedure 'print_array' at (1) with assumed-shape dummy argument 'array_int' must have an explicit interface
 ```
 
-## 2.2. Demo 2
-```fortran
-
-```
-Output:
-```shell
-$ gfortran -g test1.f90 -o test
-$ ./test
-
-```
-
 
 # 3. `explicit interface` in Fortran
 <font color="steelblue" size="4">
@@ -199,6 +188,15 @@ $ ./test
 </font>
 
 ## 3.1. Demo 1: Providing `explicit interface` -- `module block`
+<font color="red" size="4">
+
+Note
+----
+1. Note that `when passing arrays as arguments`, the array elements are `passed by reference rather than by value`.
+    - which means that any changes made to the elements of the array in the subroutine or function will also `affect the corresponding elements of the actual array passed as an argument`.
+
+</font>
+
 <font color="steelblue" size="4">
 
 1. In below demo, the subroutine `set_array_0` is defined in a module called `array_utils`.

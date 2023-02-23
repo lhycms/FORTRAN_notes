@@ -1,38 +1,37 @@
-!!! Part 1. array_utils (Module)
+!!! PartI. Module -- array_utils
 module array_utils
   implicit none
-  contains  ! module contains: 
+  contains
     !!! subroutine 1.
-    subroutine set_array_0(array_int)
+    subroutine set_array_value(array_int, value)
       integer, dimension(:) :: array_int
-      integer :: idx
-
+      integer :: idx, value
       do idx = 1, size(array_int)
-        array_int(idx) = 0
+        array_int(idx) = value
       end do
-    end subroutine set_array_0
-
+    end subroutine
 
     !!! subroutine 2.
     subroutine print_array(array_int)
       integer, dimension(:) :: array_int
       integer :: idx
-
       do idx = 1, size(array_int)
         print '(I5)', array_int(idx)
       end do
-    end subroutine print_array
+    end subroutine
 
 end module array_utils
 
 
-!!! Part 2. Driver code
+!!! Part II. Driver code
 program main
-  use array_utils ! use module: 
+  use array_utils
   implicit none
+
   integer, dimension(10) :: array_int
-  ! 1. call the subroutine -- `set_array_0`
-  call set_array_0(array_int)
-  ! 2. call the subroutine -- `print_array`
+  integer :: value = 5
+  ! 1. call `set_array_value`
+  call set_array_value(array_int, value)
+  ! 2. call `print_array`
   call print_array(array_int)
 end program main
