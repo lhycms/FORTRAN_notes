@@ -265,3 +265,37 @@ $ ./test
 ## 3.2. Demo 2: Providing `explicit interface` -- `interface block`
 
 ## 3.3. Demo 3: Providing `explicit interface` -- ``
+
+
+# 4. `allocatable` && `allocate` && `deallocate`
+<font color="steelblue" size="4">
+
+1. The `allocatable` attribute can be used to declare a variable whose size can be `dynamically allocated at runtime`.
+    - This allows the program to `allocate and deallocate memory as needed`, which is useful for handling large arrays or other data structures.
+    - Here's an example of how to use `allocatable`
+
+</font>
+
+```fortran
+program main
+  implicit none
+  ! Declare an allocatable integer array
+  integer, allocatable, dimension(:) :: myarray
+  ! Allocate memory for the array
+  allocate(myarray(10))
+  ! Initialize the array to zero
+  myarray = 0
+  ! Modify the first element of array
+  myarray(1) = 1
+  ! Print the contents of the array
+  print *, myarray
+  ! Deallocate memory for the memory
+  deallocate(myarray)
+end program main
+```
+Output:
+```shell
+$ gfortran test1.f90 -o test
+$ ./test
+           1           0           0           0           0           0           0           0           0           0
+```
