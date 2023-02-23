@@ -93,9 +93,177 @@ $ ./test
 
 1. You can pass an array as argument to the subroutine or function.
 ```fortran
-! Basic syntax
-call subroutinue(array_name)
+! 1. Basic syntax for dummy arguments
+subroutine func(array_name)
+...
+...
+...
+end subroutine func
+
+! 2. Basic syntax for `call`
+call func(array_name)
+```
+
+</font>
+
+## 2.1. Demo 1: Wrong
+<font color="red" size="4">
+
+1. 报错信息：`Error: Procedure 'set_array_0' at (1) with assumed-shape dummy argument 'array_int' must have an explicit interface
+test1.f90:36.1`
+2. The error message you encountered occurs when a Fortran `subroutine or function has an assumed-shape dummy argument` and `is calld from another program unit` without an `explicit interface`. 
+
+</font>
+
+```fortran
+!!! Part I.
+subroutine set_array_0(array_int)
+
+implicit none
+integer, dimension(:) :: array_int
+integer :: idx
+
+do idx = 1, 10
+  print *, idx
+  array_int(idx) = 0
+end do
+
+end subroutine set_array_0
+
+
+!!! Part II.
+subroutine print_array(array_int)
+
+implicit none
+integer, dimension(:) :: array_int
+integer :: idx
+
+do idx = 1, size(array_int)
+  print '(I5)', array_int(idx)
+end do
+
+end subroutine print_array
+
+
+!!! Part III.
+program main
+
+implicit none
+integer, dimension(10) :: array_int
+call set_array_0(array_int)
+call print_array(array_int)
+
+end program main
+```
+Output:
+```Output
+$ gfortran -g test1.f90 -o test
+$ ./test
+test1.f90:35.16:
+
+call set_array_0(array_int)
+                1
+Error: Procedure 'set_array_0' at (1) with assumed-shape dummy argument 'array_int' must have an explicit interface
+test1.f90:36.16:
+
+call print_array(array_int)
+                1
+Error: Procedure 'print_array' at (1) with assumed-shape dummy argument 'array_int' must have an explicit interface
+```
+
+## 2.2. Demo 2
+```fortran
+
+```
+Output:
+```shell
+$ gfortran -g test1.f90 -o test
+$ ./test
+
 ```
 
 
+# 3. `explicit interface` in Fortran
+<font color="steelblue" size="4">
+
+1. In Fortran, an `explicit interface` is way to provide the compiler with `information about the types and characteristics of the arguments` of a procedure (subroutine or function) from the calling program unit:
+    - Number of argument
+    - Data types
+    - Intent of argument
+    - Any `assumed-shape` or `assumed-size` array argument
+2. `Explicit interfaces` can be provided in several ways:
+    1. By `putting the procedure (subroutine or function) in a module` and `use` that module in the `calling program unit (程序调用单元)`
+    2. By `providing an interface block within the same program unit` that calls the procedure.
+    3. By using a `separate interface file` that provides the interface information for the procedure.
+
 </font>
+
+## 3.1. Demo 1: Providing `explicit interface` -- `module block`
+<font color="steelblue" size="4">
+
+1. In below demo, the subroutine `set_array_0` is defined in a module called `array_utils`.
+    - The `array_utils module` contains an `explicit inferface` for the subroutine.
+2. The `dimension(:)` specifier indicates that a is an array of unknown size and shape, which means it can be any size or shape array. 
+3. The `size(a)` function returns the number of elements in the array
+
+</font>
+
+```fortran
+!!! Part 1. array_utils (Module)
+module array_utils
+  implicit none
+  contains  ! module contains: 
+    !!! subroutine 1.
+    subroutine set_array_0(array_int)
+      integer, dimension(:) :: array_int
+      integer :: idx
+
+      do idx = 1, size(array_int)
+        array_int(idx) = 0
+      end do
+    end subroutine set_array_0
+
+
+    !!! subroutine 2.
+    subroutine print_array(array_int)
+      integer, dimension(:) :: array_int
+      integer :: idx
+
+      do idx = 1, size(array_int)
+        print '(I5)', array_int(idx)
+      end do
+    end subroutine print_array
+
+end module array_utils
+
+
+!!! Part 2. Driver code
+program main
+  use array_utils ! use module: 
+  implicit none
+  integer, dimension(10) :: array_int
+  ! 1. call the subroutine -- `set_array_0`
+  call set_array_0(array_int)
+  ! 2. call the subroutine -- `print_array`
+  call print_array(array_int)
+end program main
+```
+Output:
+```shell
+$ gfortran -g test1.f90 -o test
+$ ./test
+    0
+    0
+    0
+    0
+    0
+    0
+    0
+    0
+    0
+    0
+```
+
+## 3.2. Demo 2: Providing `explicit interface` -- `interface block`
+
+## 3.3. Demo 3: Providing `explicit interface` -- ``
