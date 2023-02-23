@@ -312,6 +312,143 @@ END PROGRAM print_variables
 # 8. `WRITE`
 <font color="steelblue" size="4">
 
-1. 
+1. The `write()` statement in Fortran is used to output data to a file or to the console. The basic syntax of the `write()` statement is as follows:
+```fortran
+! 1. `format`: is a character string that specifies the format of the output.
+!   - first is `*`: output to console
+! 2. `output_list`: a list of varibales to output
+write(format, output_list)
+``` 
 
 </font>
+
+## 8.1. Demo 1: Output to `console`
+```fortran
+program main
+  implicit none
+  integer :: x = 10, y = 20
+  real :: z = 3.14
+  character(len=20) :: name = "John Smith"
+
+  ! 1. Output integer to console
+  write(*, *) "x = ", x
+  write(*, *) "y = ", y
+  ! 2. Write real variable to console
+  write(*, *) "z = ", z
+  ! 3. write charactr variable to console
+  write(*, *) "name = ", name
+end program main
+```
+Ouput:
+```fortran
+$ gfortran test1.f90 -o test
+$ ./test
+ x =           10
+ y =           20
+ z =    3.14000010    
+ name = John Smith 
+```
+
+
+## 8.2. Demo 2: Output to `file`
+```fortran
+program main
+  implicit none
+  integer :: x = 10, y = 20, iounit
+  real :: z = 3.14
+  character(len=20) :: name = "Jon Smith"
+
+  iounit = 10   ! assign file unit number
+
+  ! open output file
+  open(unit=iounit, file="output.txt", status="replace")
+    ! write a integer to the file
+    write(iounit, *) "x = ", x
+    write(iounit, *) "y = ", y
+    ! write a real to the file
+    write(iounit, *) "z = ", z
+    ! write character to the file
+    write(iounit, *) "name = ", name
+  close(iounit)
+end program main
+```
+Output:
+```shell
+$ gfortran test1.f90 -o test
+$ ./test    # output to `output.txt`
+```
+
+
+# 9. `REWIND`
+<font color="steelblue" size="4">
+
+1. The `rewind(file_unit)` statement is used to `reset the file position` to the beginning of a file.
+```fortran
+rewind(file_unit)
+```
+
+</font>
+
+## 9.1. Demo 1:
+```txt
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+```fortran
+!!! Part I. Module 
+module array_utils
+  implicit none
+  contains
+    ! subroutine 1. set_array_value from file
+    subroutine set_array_value(array_real, file_unit)
+      real*8, dimension(:) :: array_real
+      integer :: file_unit
+      integer :: idx
+      do idx = 1, size(array_real)
+        read(file_unit, *) array_real(idx)
+      end do
+    end subroutine set_array_value
+
+    ! subroutine 2. print_array
+    subroutine print_array(array_real)
+      real*8, dimension(:) :: array_real
+      write(*, *) array_real
+    end subroutine print_array
+end module array_utils
+
+
+!!! Part II. Driver code
+program main
+  use array_utils
+  implicit none
+  integer :: file_unit=10, idx
+  real*8, dimension(10) :: array_real
+
+  open(unit=file_unit, file="output.txt", status="old")
+    call set_array_value(array_real, file_unit)
+    call print_array(array_real)
+
+    rewind(file_unit)
+
+    call set_array_value(array_real, file_unit)
+    call print_array(array_real)
+
+  close(file_unit)
+end program main
+```
+Output:
+```shell
+$ gfortran test1.f90 -o test
+$ ./test
+   1.0000000000000000        2.0000000000000000        3.0000000000000000        4.0000000000000000        5.0000000000000000        6.0000000000000000        7.0000000000000000        8.0000000000000000        9.0000000000000000        10.000000000000000     
+   1.0000000000000000        2.0000000000000000        3.0000000000000000        4.0000000000000000        5.0000000000000000        6.0000000000000000        7.0000000000000000        8.0000000000000000        9.0000000000000000        10.000000000000000 
+```
